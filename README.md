@@ -10,14 +10,20 @@
 
 本專案使用 2021-06-22 至 2026-06-30 期間的站間各車種中位數旅行時間歷史資料 (M04A) ，包含約 13 億筆、50 GB 原始資料，每筆資料包含時間、上下游門架、車種、旅行時間與車流量，以站間資料作為旅行時間分析的基礎。
 
+### Web Application
+
+使用者可選擇起點、終點、日期／星期／連假、出發時間，系統依據使用者輸入條件，利用歷史資料計算兩地間的預估旅行時間並呈現結果。
+
+![Travel Time Result](./images/travel_time_result.png)
+
 
 ## My Contribution
 
-我的主要負責內容為小組專題中的**資料處理與旅行時間計算程式開發**，工作如下：
+我的主要負責工作為小組專題中的**資料處理與旅行時間計算程式開發**，工作如下：
 
 * 使用 PySpark DataFrame API 開發旅行時間計算流程。
 * 根據起點與終點找出對應的高速公路路段與門架資料，確定路段範圍。
-* 依使用者輸入的日期、星期與時間條件篩選歷史資料，縮小後續 Spark 運算資料量。
+* 依使用者輸入的日期與時間條件篩選歷史資料，縮小後續 Spark 運算資料量。
 * 對各目標日期的路段旅行時間進行彙總，計算完整路段的旅行時間。
 * 以歷史資料計算旅行時間中位數，作為兩地之間的預估旅行時間。
 * 針對 Spark 資源配置的參數進行測試與調整，找出執行效率最高的參數組合。
@@ -45,13 +51,10 @@
 流程如下：
 
 ```text
-使用者輸入起點、終點、日期／星期與時間
+使用者選擇起點、終點、日期／星期／連假、時間
                 │
                 ▼
-           找出起訖門架
-                │
-                ▼
-           找出中間路段
+       找出起訖門架與行經路段
                 │
                 ▼
     依指定日期與時間篩選歷史資料
@@ -98,16 +101,17 @@
 ```text
 .
 ├── README.md
-├── final_report.pdf
+├── final_report.pdf            # 完整專題簡報
 ├── .gitignore
-├── elt/
-├── src/
-│   ├── gantry.csv
-│   ├── location.csv
-│   ├── network_structure.csv
-│   ├── travel_time_2.py
-│   └── travel_time_spark3.py
-└── ReliRoute_v2/
+├── images/
+├── elt/                        # 資料清整與轉換
+├── src/                        # 旅行時間計算程式
+│   ├── gantry.csv              # 門架資訊
+│   ├── location.csv            # 地點資訊
+│   ├── network_structure.csv   # 路網結構
+│   ├── travel_time_2.py        # 單機版旅行時間計算
+│   └── travel_time_spark3.py   # Spark 版旅行時間計算
+└── ReliRoute_v2/               # Web Application
     ├── data/
     ├── resources/
     ├── routes/
@@ -125,7 +129,7 @@
 ### Data Engineering
 
 * Python
-* Apache Spark / PySpark
+* Apache Spark
 * Hadoop HDFS
 * Parquet
 
@@ -139,15 +143,14 @@
 ### Environment
 
 * Linux
-* Docker
 * Kubernetes
 
 
-## Reproducibility and Limitations
+## Limitations
 
 本專案為小組課程專題，實際開發與執行環境包含小組建置的 Hadoop、HDFS、YARN、Spark 與 Kubernetes 環境。
 
-由於原始資料量較大，且實際執行環境與資料目前未完整包含於 Repository，因此本儲存庫主要用於展示：
+由於原始資料量較大，且實際執行環境與資料目前未完整包含於 Repository，因此本儲存庫主要提供以下專案成果與程式碼：
 
 * Spark 資料處理程式
 * 旅行時間計算邏輯
